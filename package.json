@@ -1,0 +1,25 @@
+{
+  "name": "openai-api-sandbox",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "tsup src/index.ts --format esm --clean --watch --onSuccess \"node dist/index.js\"",
+    "build": "tsup src/index.ts --format esm --clean",
+    "start": "node dist/index.js"
+  },
+  "keywords": [],
+  "author": "sutigit",
+  "license": "ISC",
+  "description": "My forever sandbox of openai api mysteries",
+  "devDependencies": {
+    "@types/node": "^24.9.1",
+    "ts-node-dev": "^2.0.0",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "openai": "^6.7.0"
+  }
+}
