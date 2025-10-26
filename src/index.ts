@@ -1,17 +1,17 @@
 import * as readline from "readline";
-import { Responses } from "./openai.js";
+import { ResponsesAPI } from "./openai.js";
 
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
-const response = new Responses("You are a CLI assistant.");
+const responses = new ResponsesAPI("You are a CLI assistant.");
 
 rl.question("Input: ", async (input) => {
   const spinner = startSpinner("Thinking");
-  const res = await response.completion({ input });
+  const res = await responses.createStream({ input });
   stopSpinner(spinner);
-  console.log("\nOutput:", res);
+  await responses.handleStream(res.toReadableStream());
   rl.close();
 });
 
