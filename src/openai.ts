@@ -7,8 +7,11 @@ const client = new OpenAI({ apiKey: process.env.OPENAI_KEY });
 
 export class ResponsesAPI {
   instructions: string;
+  previous_response_id: string | null | undefined;
+
   constructor(instructions: string = "") {
     this.instructions = instructions;
+    this.previous_response_id = "";
   }
 
   async createResponse({
@@ -21,7 +24,10 @@ export class ResponsesAPI {
       instructions: this.instructions,
       input,
       stream: false,
+      previous_response_id: this.previous_response_id ?? null,
     });
+
+    this.previous_response_id = response.previous_response_id;
     return response;
   }
 
@@ -35,7 +41,9 @@ export class ResponsesAPI {
       instructions: this.instructions,
       input,
       stream: true,
+      previous_response_id: this.previous_response_id ?? null,
     });
+
     return response;
   }
 
@@ -58,7 +66,10 @@ export class ResponsesAPI {
         const evt = JSON.parse(line);
         if (evt.type === "response.output_text.delta")
           process.stdout.write(evt.delta);
-        if (evt.type === "response.completed") process.stdout.write("\n");
+        if (evt.type === "response.completed") {
+          this.previous_response_id = evt.response.id;
+          process.stdout.write("\n");
+        }
       }
     }
   }
