@@ -2,6 +2,8 @@ import OpenAI from "openai";
 import dotenv from "dotenv";
 import type { Stream } from "openai/streaming";
 import type { ResponsesModel } from "openai/resources";
+import { zodTextFormat } from "openai/helpers/zod.js";
+import z from "zod";
 dotenv.config();
 
 const client = new OpenAI({ apiKey: process.env.OPENAI_KEY });
@@ -45,6 +47,27 @@ export class ResponsesAPI {
       input,
       stream: true,
       previous_response_id: this.previous_response_id,
+    });
+
+    return response;
+  }
+
+  async createStructuredOutput({
+    input,
+    structure,
+  }: {
+    input: string;
+    structure: z.ZodObject;
+  }): Promise<Stream<OpenAI.Responses.ResponseStreamEvent>> {
+    const response = await client.responses.create({
+      model,
+      instructions: this.instructions,
+      input,
+      previous_response_id: this.previous_response_id,
+      stream: true,
+      text: {
+        format: zodTextFormat(structure, "event"),
+      },
     });
 
     return response;
