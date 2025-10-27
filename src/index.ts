@@ -13,7 +13,7 @@ const streaming = new ResponsesAPI("You are a CLI assistant.");
 const structured = new ResponsesAPI("Extract semantics from given input");
 
 let useStructured = false;
-const options = ["stream", "structured output"];
+const options = ["text", "structured output"];
 let selected = 0;
 
 function renderMenu() {
