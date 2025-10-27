@@ -1,4 +1,4 @@
-# openai-api-docs-refs-examples
+# Forever sandbox of OpenAI features: docs, refs and examples
 
 A personal playground and reference repo for exploring **OpenAI’s API features** through minimal, working TypeScript examples.
 
