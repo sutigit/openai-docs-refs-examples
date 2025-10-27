@@ -37,7 +37,6 @@ Handles:
 - **Single-response requests** (`createResponse`)
 - **Streaming responses** (`createStream`)
 - **Stream event handling** (`handleStream`)
-- **Stream cancelling** (`cancelStream`)
 
 Maintains `previous_response_id` for continuous context.
 
