@@ -26,7 +26,7 @@ Implements a terminal-based chat loop.
 
 - Accepts user input
 - Calls the chosen API class
-- Displays streamed output with a loading spinner
+- Displays (streamed) output
 
 Type `/exit` to quit.
 
@@ -37,6 +37,7 @@ Handles:
 - **Single-response requests** (`createResponse`)
 - **Streaming responses** (`createStream`)
 - **Stream event handling** (`handleStream`)
+- **Stream cancelling** (`cancelStream`)
 
 Maintains `previous_response_id` for continuous context.
 
