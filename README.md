@@ -7,7 +7,7 @@ A personal playground and reference repo for exploring **OpenAI’s API features
 This project serves as both **documentation** and **sandbox** for testing different OpenAI features.  
 It runs as a **simple terminal CLI**, where each API feature is encapsulated in its own class.
 
-Current focus: the **Responses API**, with support for both single-response and streaming modes.  
+Current focus: the **Responses API**, supporting **text streaming** and **JSON-structured streaming** output modes.  
 Future additions: the **Conversations API** and other feature examples.
 
 ---
@@ -16,35 +16,71 @@ Future additions: the **Conversations API** and other feature examples.
 
 ```
 src/
-├── index.ts # CLI entry point and user interaction loop
-└── openai.ts # Feature classes (e.g., ResponsesAPI)
+├── index.ts              # CLI entry point and interactive loop
+└── openai/
+    └── ResponsesAPI.ts   # Wrapper for OpenAI Responses API
 ```
 
 ### `index.ts`
 
-Implements a terminal-based chat loop.
+Terminal-based CLI with **mode selection** using arrow keys:
 
-- Accepts user input
-- Calls the chosen API class
-- Displays (streamed) output
+```
+Select mode:
+
+> text
+  structured output
+```
+
+Press **Enter** to confirm.
+
+#### Modes
+
+- **text** — streams plain text responses
+- **structured output** — streams JSON responses matching a `zod` schema
+
+After selecting a mode, the CLI enters a continuous chat loop.
 
 Type `/exit` to quit.
 
 ### `ResponsesAPI` class
 
-Handles:
+Wrapper for OpenAI’s **Responses API**.
 
-- **Single-response requests** (`createResponse`)
-- **Streaming responses** (`createStream`)
-- **Stream event handling** (`handleStream`)
+- `createResponse` — single response
+- `createStream` — streaming text response
+- `createStructuredOutput` — streaming structured JSON output
+- `handleStream` — consumes and prints streaming events
 
-Maintains `previous_response_id` for continuous context.
+Maintains `previous_response_id` to preserve conversational context.
+
+Example (text mode):
 
 ```ts
 const responses = new ResponsesAPI("You are a CLI assistant.");
 const stream = await responses.createStream({ input: "Hello" });
 await responses.handleStream(stream.toReadableStream());
 ```
+
+Example (structured output mode):
+
+```ts
+import z from "zod";
+
+const structured = new ResponsesAPI("Extract semantics from input");
+const schema = z.object({
+  mood: z.string(),
+  tone: z.string(),
+});
+
+const stream = await structured.createStructuredOutput({
+  input: "That was amazing!",
+  structure: schema,
+});
+await structured.handleStream(stream.toReadableStream());
+```
+
+---
 
 ## Scripts
 
@@ -54,34 +90,37 @@ await responses.handleStream(stream.toReadableStream());
 | `npm run build` | Compile TypeScript using `tsup`     |
 | `npm start`     | Run the compiled build              |
 
+---
+
 ## Setup
 
 1. Install dependencies
 
-```
-npm i
-```
+   ```bash
+   npm i
+   ```
 
-2. Create `.env` file with your OpenAi API key
+2. Create `.env` file with your OpenAI API key
 
-```
-OPENAI_KEY=your_api_key_here
-```
+   ```bash
+   OPENAI_KEY=your_api_key_here
+   ```
 
 3. Run the CLI
 
-```
-npm run dev
-```
+   ```bash
+   npm run dev
+   ```
+
+---
 
 ## Future work
 
-Add ConversationAPI for OpenAI’s conversation endpoints
+- Add ConversationAPI for OpenAI’s conversation endpoints
+- Extend CLI for multi-feature selection
+- Add examples for embeddings, files, and tools
 
-Extend CLI for multi-feature selection
+---
 
-Add more structured examples for embeddings, files, and tools
-
-License
-
+**License**  
 ISC © sutigit
