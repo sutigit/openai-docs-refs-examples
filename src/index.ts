@@ -1,5 +1,5 @@
 import * as readline from "readline";
-import { ResponsesAPI } from "./openai.js";
+import { ResponsesAPI } from "./openai/ResponsesAPI.js";
 
 const rl = readline.createInterface({
   input: process.stdin,
