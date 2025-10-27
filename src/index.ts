@@ -7,20 +7,29 @@ const rl = readline.createInterface({
 });
 const responses = new ResponsesAPI("You are a CLI assistant.");
 
-rl.question("Input: ", async (input) => {
-  const spinner = startSpinner("Thinking");
-  const res = await responses.createStream({ input });
-  stopSpinner(spinner);
-  await responses.handleStream(res.toReadableStream());
-  rl.close();
-});
+async function ask() {
+  rl.question("Input (or /exit): ", async (input) => {
+    if (input.trim() === "/exit") {
+      rl.close();
+      return;
+    }
+    const spinner = startSpinner("Thinking");
+    const stream = await responses.createStream({ input });
+    stopSpinner(spinner);
+    await responses.handleStream(stream.toReadableStream());
+    ask();
+  });
+}
+
+ask();
 
 function startSpinner(text: string): ReturnType<typeof setInterval> {
   const frames = ["|", "/", "-", "\\"];
   let i = 0;
-  return setInterval(() => {
-    process.stdout.write(`\r${frames[i++ % frames.length]} ${text}`);
-  }, 100);
+  return setInterval(
+    () => process.stdout.write(`\r${frames[i++ % frames.length]} ${text}`),
+    100
+  );
 }
 
 function stopSpinner(spinner: ReturnType<typeof setInterval>) {
