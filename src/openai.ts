@@ -1,9 +1,12 @@
 import OpenAI from "openai";
 import dotenv from "dotenv";
 import type { Stream } from "openai/streaming";
+import type { ResponsesModel } from "openai/resources";
 dotenv.config();
 
 const client = new OpenAI({ apiKey: process.env.OPENAI_KEY });
+
+const model: ResponsesModel = "gpt-4.1-nano";
 
 export class ResponsesAPI {
   instructions: string;
@@ -20,7 +23,7 @@ export class ResponsesAPI {
     input: string;
   }): Promise<OpenAI.Responses.Response> {
     const response = await client.responses.create({
-      model: "gpt-4.1-mini",
+      model,
       instructions: this.instructions,
       input,
       stream: false,
@@ -37,7 +40,7 @@ export class ResponsesAPI {
     input: string;
   }): Promise<Stream<OpenAI.Responses.ResponseStreamEvent>> {
     const response = await client.responses.create({
-      model: "gpt-5",
+      model,
       instructions: this.instructions,
       input,
       stream: true,
